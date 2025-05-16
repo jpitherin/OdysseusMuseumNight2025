@@ -7,8 +7,13 @@ require("utils.lua")
 
 
 function init()
-	player = PlayerSpaceship():setFaction("Human Navy"):setTemplate("Atlantis"):setCanSelfDestruct(false)
-	player:setLongRangeRadarRange(15000):setJumpDrive(false):setPosition(0,0)
+	player = PlayerSpaceship():setFaction("EOC"):setTemplate("Atlantis"):setCallSign("ESS Odysseus")
+	player:setLongRangeRadarRange(15000):setJumpDrive(false):setPosition(0,0):setCanSelfDestruct(false)
+	player:setWeaponStorageMax("Homing",500):setWeaponStorage("Homing",500)
+	player:setWeaponStorageMax("Nuke",0):setWeaponStorage("Nuke",0)
+	player:setWeaponStorageMax("Mine",100):setWeaponStorage("Mine",100)
+	player:setWeaponStorageMax("EMP",0):setWeaponStorage("EMP",0)
+	player:setWeaponStorageMax("HVLI",0):setWeaponStorage("HVLI",0)
 	
 	addGMFunction("+Asteroids", function() onGMClick(function(x,y) addAsteroids(Asteroid, 30, 1000, 20000, x, y) end) end)
 	addGMFunction("+Enemies x3", function() onGMClick(function(x,y) enemies3(x,y) end) end)
@@ -24,13 +29,14 @@ function addAsteroids(object_type, amount, dist_min, dist_max, x0, y0)
 end
 
 function addEnemy1(x0,y0)
-	CpuShip():setShipTemplate("Adder MK5"):setFaction("Exuari"):setPosition(x0, y0):orderAttack(player)
+	CpuShip():setShipTemplate("Adder MK5"):setFaction("Machines"):setPosition(x0, y0):orderAttack(player)
 	onGMClick(nil)
 	removeGMFunction("1: Enemy x1")
 end
 
 function addSOS(x0,y0)
-	ally = CpuShip():setShipTemplate("Atlantis"):setFaction("Human Navy"):setPosition(x0, y0):orderIdle()
+	ally = CpuShip():setShipTemplate("Atlantis"):setFaction("EOC"):setCallSign("ESS Theseus")
+	ally:setPosition(x0, y0):orderIdle()
 	player:commandAddWaypoint(x0,y0)
 	onGMClick(nil)
 	removeGMFunction("2: SOS")
@@ -42,7 +48,7 @@ function placeEnemiesAroundPoint(amount, dist_min, dist_max, x0, y0)
 		local distance = random(dist_min, dist_max)
 		local x = x0 + math.cos(r / 180 * math.pi) * distance
 		local y = y0 + math.sin(r / 180 * math.pi) * distance
-		CpuShip():setShipTemplate("Adder MK5"):setFaction("Exuari"):setPosition(x, y):orderAttack(player)
+		CpuShip():setShipTemplate("Adder MK5"):setFaction("Machines"):setPosition(x, y):orderAttack(player)
 	end
 end
 
@@ -64,6 +70,7 @@ end
 
 function reset()
 	player:setLongRangeRadarRange(15000):setJumpDrive(false):setPosition(0,0)
+	player:setWeaponStorage("Homing",500)
 	
 	addGMFunction("1: Enemy x1", function() onGMClick(function(x,y) addEnemy1(x,y) end) end)
 	addGMFunction("2: SOS", function() onGMClick(function(x,y) addSOS(x,y) end) end)
